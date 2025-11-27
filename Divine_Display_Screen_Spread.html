@@ -6,71 +6,103 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
-    html,body{height:100%;margin:0;background:#ffffff;font-family:Inter,Arial,Helvetica,sans-serif;color:#0f1720}
-    .wrap{max-width:1280px;margin:28px auto;padding:0 12px;box-sizing:border-box}
-    .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .title{font-weight:700;font-size:18px}
-    #map{width:1280px;height:720px;margin:0 auto;border-radius:6px;box-shadow:0 6px 18px rgba(15,23,32,0.06);position:relative;overflow:visible;background:#ffffff}
-    /* fixed top-right stack: same width for both boxes */
-    .top-right{position:fixed;top:16px;right:16px;display:flex;flex-direction:column;gap:10px;align-items:flex-end;z-index:9999}
-    .stack-box{width:200px;box-sizing:border-box;background:rgba(255,255,255,0.96);padding:8px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,32,0.06);display:flex;align-items:center;gap:8px}
-    .stack-box .content{width:100%}
-    .wm-icon{flex:0 0 34px}
-    .wm-icon svg{width:34px;height:34px;display:block;opacity:0.92}
-    .brand{font-weight:700;color:#0f1720;font-size:13px;opacity:0.95}
-    .legend{flex-direction:column;align-items:flex-start;padding:10px;gap:6px}
-    .legend .title{font-weight:700;margin-bottom:6px}
-    .legend .item{display:flex;align-items:center;gap:8px;width:100%}
-    .swatch{width:18px;height:18px;border-radius:4px;flex:0 0 18px;border:1px solid rgba(15,23,32,0.06)}
-    .legend .label{font-size:13px;color:#0f1720}
-    .label-pill{background:rgba(255,255,255,0.98);padding:6px 10px;border-radius:10px;font-weight:600;border:1px solid rgba(15,23,32,0.06);font-size:12px;box-shadow:0 6px 12px rgba(15,23,32,0.03)}
+    html,body {
+      height:100%;
+      margin:0;
+      background:#ffffff;
+      font-family:Inter,Arial,Helvetica,sans-serif;
+      color:#0f1720;
+      display:flex;
+      flex-direction:column;
+    }
+    .header {
+      padding:12px;
+      text-align:center;
+      font-weight:700;
+      font-size:1.2rem;
+    }
+    .map-wrapper {
+      flex:1;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:12px;
+      box-sizing:border-box;
+    }
+    #map {
+      width:100%;
+      height:100%;
+      max-width:1600px;   /* limit width for very large screens */
+      max-height:900px;   /* limit height for very large screens */
+      border-radius:8px;
+      box-shadow:0 6px 18px rgba(15,23,32,0.06);
+    }
+    /* top-right stack: caption + legend, responsive */
+    .top-right {
+      position:absolute;
+      top:12px;
+      right:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:flex-end;
+      z-index:9999;
+    }
+    .stack-box {
+      width:220px; /* same width for caption and legend */
+      background:rgba(255,255,255,0.96);
+      padding:8px;
+      border-radius:8px;
+      box-shadow:0 6px 18px rgba(15,23,32,0.06);
+      box-sizing:border-box;
+    }
+    .wm-caption {
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .wm-caption svg {width:28px;height:28px;opacity:0.92}
+    .wm-caption .brand {font-weight:700;font-size:0.9rem}
+    .legend .title {font-weight:700;margin-bottom:6px}
+    .legend .item {display:flex;align-items:center;gap:8px;margin:4px 0}
+    .swatch {width:16px;height:16px;border-radius:4px;border:1px solid rgba(15,23,32,0.06)}
+    .label-pill {
+      background:rgba(255,255,255,0.98);
+      padding:4px 8px;
+      border-radius:10px;
+      font-weight:600;
+      font-size:0.8rem;
+      border:1px solid rgba(15,23,32,0.06);
+      box-shadow:0 6px 12px rgba(15,23,32,0.03);
+    }
   </style>
 </head>
 <body>
-  <!-- top-right vertical stack: both boxes share same width -->
-  <div class="top-right" aria-hidden="true">
-    <div class="stack-box wm-caption" role="note" aria-label="Divine Display caption">
-      <div class="wm-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0" stop-color="#BFA16A"/>
-              <stop offset="1" stop-color="#F2D9A7"/>
-            </linearGradient>
-          </defs>
-          <rect x="2" y="2" width="20" height="20" rx="4" fill="url(#g)" opacity="0.95"/>
-          <path d="M7 12h10M7 8h10M7 16h6" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.96"/>
+  <div class="header">Divine Display — Screen Spread (Responsive Preview)</div>
+  <div class="map-wrapper">
+    <div id="map"></div>
+    <div class="top-right">
+      <div class="stack-box wm-caption">
+        <!-- inline SVG icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#BFA16A"/>
+          <path d="M7 12h10M7 8h10M7 16h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
         </svg>
-      </div>
-      <div class="content">
         <div class="brand">Divine Display</div>
       </div>
-    </div>
-
-    <div class="stack-box legend" role="group" aria-label="Legend (State)">
-      <div class="content">
+      <div class="stack-box legend">
         <div class="title">Legend (State)</div>
-        <div class="item"><div class="swatch" style="background:#1E88E5"></div><div class="label">Gujarat</div></div>
-        <div class="item"><div class="swatch" style="background:#FB8C00"></div><div class="label">Uttar Pradesh</div></div>
-        <div class="item"><div class="swatch" style="background:#43A047"></div><div class="label">Uttarakhand</div></div>
-        <div class="item"><div class="swatch" style="background:#F5BE27"></div><div class="label">Maharashtra</div></div>
+        <div class="item"><div class="swatch" style="background:#1E88E5"></div><div>Gujarat</div></div>
+        <div class="item"><div class="swatch" style="background:#FB8C00"></div><div>Uttar Pradesh</div></div>
+        <div class="item"><div class="swatch" style="background:#43A047"></div><div>Uttarakhand</div></div>
+	<div class="item"><div class="swatch" style="background:#F5BE27"></div><div class="label">Maharashtra</div></div>
         <div class="item"><div class="swatch" style="background:#F54927"></div><div class="label">Madhya Pradesh</div></div>
       </div>
     </div>
   </div>
 
-  <div class="wrap">
-    <div class="head">
-      <div class="title">Divine Display — Screen Spread (Preview)</div>
-      <div style="color:#6b7280;font-size:13px">Total screens: 27</div>
-    </div>
-
-    <div id="map"></div>
-  </div>
-
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Data (city, state, lat, lon, count)
     const points = [
       {city:"Bhuj", state:"Gujarat", lat:23.25, lon:69.6667, count:2},
       {city:"Chotila", state:"Gujarat", lat:22.755, lon:71.347, count:1},
@@ -86,33 +118,23 @@
       {city:"Ujjain", state:"Madhya Pradesh", lat:23.1767, lon:75.7862, count:3}
     ];
     const stateColors = {"Gujarat":"#1E88E5","Uttar Pradesh":"#FB8C00","Uttarakhand":"#43A047","Madhya Pradesh":"#F54927","Maharashtra":"#F5BE27"};
-    const MARKER_DIAMETER = 36, MARKER_RADIUS = MARKER_DIAMETER/2;
+    const MARKER_DIAMETER = 28, MARKER_RADIUS = MARKER_DIAMETER/2;
 
-    // Initialize Leaflet map
-    window.map = L.map('map', { zoomControl:true, attributionControl:false }).setView([24.2,77.0], 5.2);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom:19, crossOrigin:true }).addTo(window.map);
+    const map = L.map('map',{zoomControl:true,attributionControl:false}).setView([24.2,77.0],5.2);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19,crossOrigin:true}).addTo(map);
 
-    // Plot equal-size markers and labels
-    points.forEach(p => {
-      const color = stateColors[p.state] || '#9e9e9e';
-      const markerHtml = `<div style="
-        width:${MARKER_DIAMETER}px;height:${MARKER_DIAMETER}px;border-radius:50%;
-        background:${color};box-shadow:0 6px 14px rgba(0,0,0,0.08);
-        border:1.2px solid rgba(0,0,0,0.06);
-      "></div>`;
-      const icon = L.divIcon({ className:'marker-div', html:markerHtml, iconSize:[MARKER_DIAMETER, MARKER_DIAMETER], iconAnchor:[MARKER_RADIUS, MARKER_RADIUS] });
-      L.marker([p.lat, p.lon], { icon: icon }).addTo(window.map);
+    points.forEach(p=>{
+      const color = stateColors[p.state]||'#9e9e9e';
+      const markerHtml = `<div style="width:${MARKER_DIAMETER}px;height:${MARKER_DIAMETER}px;border-radius:50%;background:${color};border:1px solid rgba(0,0,0,0.06)"></div>`;
+      const icon = L.divIcon({html:markerHtml,iconSize:[MARKER_DIAMETER,MARKER_DIAMETER],iconAnchor:[MARKER_RADIUS,MARKER_RADIUS]});
+      L.marker([p.lat,p.lon],{icon}).addTo(map);
 
-      const labelHtml = `<div style="
-        background:rgba(255,255,255,0.98);padding:6px 10px;border-radius:10px;font-weight:600;
-        border:1px solid rgba(15,23,32,0.06);font-size:12px;box-shadow:0 6px 12px rgba(15,23,32,0.03)
-      ">${p.city} — ${p.count}</div>`;
-      const labelIcon = L.divIcon({ className:'label-pill', html:labelHtml, iconAnchor:[0,0] });
-      const offsetLon = (p.lon > 78.5) ? -0.35 : 0.35;
-      L.marker([p.lat + 0.12*offsetLon, p.lon + (offsetLon/40)], { icon: labelIcon, interactive:false }).addTo(window.map);
+      const labelHtml = `<div class="label-pill">${p.city} — ${p.count}</div>`;
+      const labelIcon = L.divIcon({html:labelHtml,iconAnchor:[0,0]});
+      L.marker([p.lat+0.2,p.lon+0.2],{icon:labelIcon,interactive:false}).addTo(map);
     });
 
-    setTimeout(()=>{ window.map.invalidateSize(); },250);
+    window.addEventListener('resize',()=>map.invalidateSize());
   </script>
 </body>
 </html>
