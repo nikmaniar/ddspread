@@ -78,7 +78,7 @@
   </style>
 </head>
 <body>
-  <div class="header">Divine Display — Screen Spread (Responsive Preview)</div>
+  <div class="header">Divine Display — Screen Spread </div>
   <div class="map-wrapper">
     <div id="map"></div>
     <div class="top-right">
@@ -97,6 +97,8 @@
         <div class="item"><div class="swatch" style="background:#43A047"></div><div>Uttarakhand</div></div>
 	<div class="item"><div class="swatch" style="background:#F5BE27"></div><div class="label">Maharashtra</div></div>
         <div class="item"><div class="swatch" style="background:#F54927"></div><div class="label">Madhya Pradesh</div></div>
+        <div class="item"><div class="swatch" style="background:#F5DD27"></div><div class="label">Odisha</div></div>
+
       </div>
     </div>
   </div>
@@ -115,9 +117,10 @@
       {city:"Varanasi", state:"Uttar Pradesh", lat:25.3176, lon:82.9739, count:4},
       {city:"Nashik", state:"Maharashtra", lat:19.9957, lon:73.7907, count:2},
       {city:"Shirdi", state:"Maharashtra", lat:19.7645, lon:74.4765, count:1},
-      {city:"Ujjain", state:"Madhya Pradesh", lat:23.1767, lon:75.7862, count:3}
-    ];
-    const stateColors = {"Gujarat":"#1E88E5","Uttar Pradesh":"#FB8C00","Uttarakhand":"#43A047","Madhya Pradesh":"#F54927","Maharashtra":"#F5BE27"};
+      {city:"Ujjain", state:"Madhya Pradesh", lat:23.1767, lon:75.7862, count:3},
+      {city:"Puri", state:"Odisha", lat:19.8131, lon:85.8311, count:2}
+ ];
+    const stateColors = {"Gujarat":"#1E88E5","Uttar Pradesh":"#FB8C00","Uttarakhand":"#43A047","Madhya Pradesh":"#F54927","Maharashtra":"#F5BE27","Odisha":"#F5DD27"};
     const MARKER_DIAMETER = 28, MARKER_RADIUS = MARKER_DIAMETER/2;
 
     const map = L.map('map',{zoomControl:true,attributionControl:false}).setView([24.2,77.0],5.2);
