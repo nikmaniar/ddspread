@@ -28,20 +28,20 @@
       align-items:center;
       padding:12px;
       box-sizing:border-box;
+      position: relative;
     }
     #map {
       width:100%;
       height:100%;
-      max-width:1600px;   /* limit width for very large screens */
-      max-height:900px;   /* limit height for very large screens */
+      max-width:1600px;
+      max-height:900px;
       border-radius:8px;
       box-shadow:0 6px 18px rgba(15,23,32,0.06);
     }
-    /* top-right stack: caption + legend, responsive */
     .top-right {
       position:absolute;
-      top:12px;
-      right:12px;
+      top:24px;
+      right:24px;
       display:flex;
       flex-direction:column;
       gap:10px;
@@ -49,7 +49,7 @@
       z-index:9999;
     }
     .stack-box {
-      width:220px; /* same width for caption and legend */
+      width:220px;
       background:rgba(255,255,255,0.96);
       padding:8px;
       border-radius:8px;
@@ -64,8 +64,9 @@
     .wm-caption svg {width:28px;height:28px;opacity:0.92}
     .wm-caption .brand {font-weight:700;font-size:0.9rem}
     .legend .title {font-weight:700;margin-bottom:6px}
-    .legend .item {display:flex;align-items:center;gap:8px;margin:4px 0}
+    .legend .item {display:flex;align-items:center;gap:8px;margin:4px 0; font-size: 0.9rem;}
     .swatch {width:16px;height:16px;border-radius:4px;border:1px solid rgba(15,23,32,0.06)}
+    
     .label-pill {
       background:rgba(255,255,255,0.98);
       padding:4px 8px;
@@ -74,6 +75,19 @@
       font-size:0.8rem;
       border:1px solid rgba(15,23,32,0.06);
       box-shadow:0 6px 12px rgba(15,23,32,0.03);
+      white-space: nowrap;
+    }
+
+    /* Clean hover tooltip for states instead of cluttered permanent text */
+    .leaflet-tooltip.state-label-hover {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(15,23,32,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #0f172a;
+      border-radius: 4px;
+      padding: 4px 8px;
     }
   </style>
 </head>
@@ -83,7 +97,6 @@
     <div id="map"></div>
     <div class="top-right">
       <div class="stack-box wm-caption">
-        <!-- inline SVG icon -->
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <rect x="2" y="2" width="20" height="20" rx="4" fill="#BFA16A"/>
           <path d="M7 12h10M7 8h10M7 16h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
@@ -95,12 +108,12 @@
         <div class="item"><div class="swatch" style="background:#1E88E5"></div><div>Gujarat - 9 Spread</div></div>
         <div class="item"><div class="swatch" style="background:#FB8C00"></div><div>Uttar Pradesh - 9 Spread</div></div>
         <div class="item"><div class="swatch" style="background:#43A047"></div><div>Uttarakhand - 6 Spread</div></div>
-	<div class="item"><div class="swatch" style="background:#F5BE27"></div><div class="label">Maharashtra - 3 Spread</div></div>
-        <div class="item"><div class="swatch" style="background:#F54927"></div><div class="label">MP - 3 Spread</div></div>
-        <div class="item"><div class="swatch" style="background:#F5DD27"></div><div class="label">Odisha - 2 Spread</div></div>
-        <div class="item"><div class="swatch" style="background:#09EDD4"></div><div class="label">Bihar - 2 Spread</div></div>
-        <div class="item"><div class="swatch" style="background:#FF66FF"></div><div class="label">Rajasthan - 3 Spread</div></div>
-        <div class="item"><div class="swatch" style="background:#7C37BC"></div><div class="label">Andhra - 6 Spread</div></div>
+        <div class="item"><div class="swatch" style="background:#F5BE27"></div><div>Maharashtra - 3 Spread</div></div>
+        <div class="item"><div class="swatch" style="background:#F54927"></div><div>MP - 3 Spread</div></div>
+        <div class="item"><div class="swatch" style="background:#F5DD27"></div><div>Odisha - 2 Spread</div></div>
+        <div class="item"><div class="swatch" style="background:#09EDD4"></div><div>Bihar - 2 Spread</div></div>
+        <div class="item"><div class="swatch" style="background:#FF66FF"></div><div>Rajasthan - 3 Spread</div></div>
+        <div class="item"><div class="swatch" style="background:#7C37BC"></div><div>Andhra - 6 Spread</div></div>
       </div>
     </div>
   </div>
@@ -108,43 +121,104 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const points = [
-      {city:"Bhuj", state:"Gujarat", lat:23.25, lon:69.6667, count:3},
-      {city:"Chotila", state:"Gujarat", lat:22.755, lon:71.347, count:1},
-      {city:"Dwarka", state:"Gujarat", lat:22.241, lon:68.968, count:3},
-      {city:"Somnath", state:"Gujarat", lat:20.8833, lon:70.4028, count:2},
-      {city:"Haridwar", state:"Uttarakhand", lat:29.9457, lon:78.1642, count:4},
-      {city:"Kainchidham", state:"Uttarakhand", lat:29.42269, lon:79.51237, count:2},
-      {city:"Mathura", state:"Uttar Pradesh", lat:27.4924, lon:77.6737, count:2},
-      {city:"Vrindavan", state:"Uttar Pradesh", lat:27.5718, lon:77.6997, count:4},
-      {city:"Varanasi", state:"Uttar Pradesh", lat:25.3176, lon:82.9739, count:3},
-      {city:"Nashik", state:"Maharashtra", lat:19.9957, lon:73.7907, count:2},
-      {city:"Shirdi", state:"Maharashtra", lat:19.7645, lon:74.4765, count:1},
-      {city:"Ujjain", state:"Madhya Pradesh", lat:23.1767, lon:75.7862, count:3},
-      {city:"Puri", state:"Odisha", lat:19.8131, lon:85.8311, count:2},
-      {city:"BodhGaya", state:"Bihar", lat:24.7934, lon:84.9995, count:2},
-      {city:"Khatoo", state:"Rajasthan", lat:27.3639, lon:75.4053, count:3},
-      {city:"Srisailam", state:"Andhra", lat:16.0736, lon:78.8685, count:3},
-      {city:"Tirupati", state:"Andhra", lat:13.63450, lon:79.4328, count:3}
-
-];
+      {city:"Bhuj", state:"Gujarat", lat:23.25, lon:69.6667},
+      {city:"Chotila", state:"Gujarat", lat:22.755, lon:71.347},
+      {city:"Dwarka", state:"Gujarat", lat:22.241, lon:68.968},
+      {city:"Somnath", state:"Gujarat", lat:20.8833, lon:70.4028},
+      {city:"Haridwar", state:"Uttarakhand", lat:29.9457, lon:78.1642},
+      {city:"Kainchidham", state:"Uttarakhand", lat:29.42269, lon:79.51237},
+      {city:"Mathura", state:"Uttar Pradesh", lat:27.4924, lon:77.6737},
+      {city:"Vrindavan", state:"Uttar Pradesh", lat:27.5718, lon:77.6997},
+      {city:"Varanasi", state:"Uttar Pradesh", lat:25.3176, lon:82.9739},
+      {city:"Nashik", state:"Maharashtra", lat:19.9957, lon:73.7907},
+      {city:"Shirdi", state:"Maharashtra", lat:19.7645, lon:74.4765},
+      {city:"Ujjain", state:"Madhya Pradesh", lat:23.1767, lon:75.7862},
+      {city:"Puri", state:"Odisha", lat:19.8131, lon:85.8311},
+      {city:"BodhGaya", state:"Bihar", lat:24.7934, lon:84.9995},
+      {city:"Khatoo", state:"Rajasthan", lat:27.3639, lon:75.4053},
+      {city:"Srisailam", state:"Andhra", lat:16.0736, lon:78.8685},
+      {city:"Tirupati", state:"Andhra", lat:13.63450, lon:79.4328}
+    ];
+    
     const stateColors = {"Gujarat":"#1E88E5","Uttar Pradesh":"#FB8C00","Uttarakhand":"#43A047","Madhya Pradesh":"#F54927","Maharashtra":"#F5BE27","Odisha":"#F5DD27","Bihar":"#09EDD4","Rajasthan":"#FF66FF","Andhra":"#7C37BC"};
     const MARKER_DIAMETER = 28, MARKER_RADIUS = MARKER_DIAMETER/2;
 
-    const map = L.map('map',{zoomControl:true,attributionControl:false}).setView([24.2,77.0],5.2);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19,crossOrigin:true}).addTo(map);
+    const map = L.map('map',{zoomControl:true,attributionControl:true})
+      .setView([22.5, 79.0], 5.0);
 
-    points.forEach(p=>{
-      const color = stateColors[p.state]||'#9e9e9e';
-      const markerHtml = `<div style="width:${MARKER_DIAMETER}px;height:${MARKER_DIAMETER}px;border-radius:50%;background:${color};border:1px solid rgba(0,0,0,0.06)"></div>`;
-      const icon = L.divIcon({html:markerHtml,iconSize:[MARKER_DIAMETER,MARKER_DIAMETER],iconAnchor:[MARKER_RADIUS,MARKER_RADIUS]});
-      L.marker([p.lat,p.lon],{icon}).addTo(map);
+    // Free Esri map background
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16,
+      attribution: 'Tiles &copy; Esri'
+    }).addTo(map);
 
-      const labelHtml = `<div class="label-pill">${p.city} — ${p.count}</div>`;
-      const labelIcon = L.divIcon({html:labelHtml,iconAnchor:[0,0]});
-      L.marker([p.lat+0.2,p.lon+0.2],{icon:labelIcon,interactive:false}).addTo(map);
+    // Reliable GeoJSON sources
+    const officialBoundaryUrl = 'https://cdn.jsdelivr.net/gh/datameet/maps@master/Country/india-composite.geojson';
+    const stateBoundaryUrl = 'https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson';
+
+    // Fetch both datasets concurrently
+    Promise.all([
+      fetch(officialBoundaryUrl).then(res => res.json()),
+      fetch(stateBoundaryUrl).then(res => res.json())
+    ])
+    .then(([nationalData, stateData]) => {
+      
+      // 1. Draw thick outer National Boundary
+      L.geoJSON(nationalData, {
+        style: {
+          color: '#0f172a',       
+          weight: 3.5,            
+          fillColor: '#ffffff',   
+          fillOpacity: 0.45       
+        }
+      }).addTo(map);
+
+      // 2. Draw thinner internal State Boundaries
+      L.geoJSON(stateData, {
+        filter: function(feature) {
+          const name = (feature.properties.ST_NM || feature.properties.name || "").toLowerCase();
+          return !(name.includes("jammu") || name.includes("kashmir") || name.includes("ladakh"));
+        },
+        style: {
+          color: '#8e9eab',       // Slightly lighter slate-gray to reduce visual weight further
+          weight: 1.2,            // Very crisp, thin line
+          fillColor: '#ffffff',
+          fillOpacity: 0.01       // Barely-there fill to allow hovering
+        },
+        onEachFeature: function (feature, layer) {
+          const stateName = feature.properties.ST_NM || feature.properties.name;
+          if (stateName) {
+            // Changed to a hover tooltip instead of permanent text
+            layer.bindTooltip(stateName, {
+              sticky: true, // Tooltip follows the mouse
+              className: "state-label-hover"
+            });
+          }
+        }
+      }).addTo(map);
+      
+      // 3. Render markers exactly on top
+      renderPoints();
+    })
+    .catch(err => {
+      console.error("Error loading boundaries:", err);
+      renderPoints(); 
     });
 
-    window.addEventListener('resize',()=>map.invalidateSize());
+    function renderPoints() {
+      points.forEach(p => {
+        const color = stateColors[p.state] || '#9e9e9e';
+        const markerHtml = `<div style="width:${MARKER_DIAMETER}px;height:${MARKER_DIAMETER}px;border-radius:50%;background:${color};border:1px solid rgba(0,0,0,0.1); box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`;
+        const icon = L.divIcon({html:markerHtml,iconSize:[MARKER_DIAMETER,MARKER_DIAMETER],iconAnchor:[MARKER_RADIUS,MARKER_RADIUS]});
+        L.marker([p.lat,p.lon],{icon}).addTo(map);
+
+        const labelHtml = `<div class="label-pill">${p.city}</div>`;
+        const labelIcon = L.divIcon({html:labelHtml,iconAnchor:[0,-2]});
+        L.marker([p.lat+0.2,p.lon+0.2],{icon:labelIcon,interactive:false}).addTo(map);
+      });
+    }
+
+    window.addEventListener('resize', () => map.invalidateSize());
   </script>
 </body>
 </html>
